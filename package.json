@@ -1,7 +1,7 @@
 {
   "name": "izyware-dataconsole-elasticsearch",
   "version": "1.0.0",
-  "description": "IzyWare Data Console ElasticSearch Feature Package",
+  "description": "IzyWare Data Console ElasticSearch Feature",
   "main": "index.js",
   "scripts": {
     "searchById": "node node_modules/izy-proxy/cli.js call search?byId",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/izyware/apps-dataconsole-rekey"
+    "url": "https://github.com/izyware/dataconsole-elasticsearch"
   },
   "dependencies": {
     "elasticsearch": "14.2.2",
