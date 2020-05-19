@@ -47,12 +47,18 @@ const modtask = (chainItem, cb, $chain) => {
         delete: {
           index: query.index,
           type: query.type,
-          id: query.ids[0]
+          id: query.id
         }
       };
       modtask.connection[fn[params.action]](q[params.action], (err, data) => {
         if (verbose.logQuery) console.log(`${params.action}:finish`, (new Date()).getTime() - start);
-        if (err) return $chain.chainReturnCB({ reason: err.message });
+        if (err) {
+          if (err.status == 404 && query.ignoreNotFound) {
+            if (verbose.logQuery) console.log(`${params.action}:ignoreNotFound`);
+          } else {
+            return $chain.chainReturnCB({reason: err.message});
+          }
+        }
         $chain.set('outcome', { success: true, data });
         cb();
       });
