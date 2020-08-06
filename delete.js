@@ -17,7 +17,7 @@ modtask.byId = (queryObject, cb) => {
     ['chain.importProcessor', 'chain', {
       verbose: modtask.verbose
     }],
-    ['//inline/?loadConfigJSONFromID', { id: esConfigId }],
+    ['//inline/rel:json?loadById', { id: esConfigId }],
     chain => chain(['es.connect', chain.get('outcome').data]),
     chain => {
       var i = 0 ;
@@ -43,13 +43,3 @@ modtask.byId = (queryObject, cb) => {
     }
   ]);
 };
-
-modtask.loadConfigJSONFromID = (queryObject, cb) => {
-  const { id } = queryObject;
-  try {
-    cb({ success: true, data: JSON.parse(require('fs').readFileSync(`${id}`)) })
-  } catch(e) {
-    cb({ reason: e.message });
-  }
-}
-

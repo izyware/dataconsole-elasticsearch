@@ -20,7 +20,8 @@ const modtask = (chainItem, cb, $chain) => {
       $chain.set('outcome', { success: true });
       cb();
       return true;
-    case 'query':
+    case 'searchById':
+    case 'searchGeneric':
     case 'delete':
       if (!modtask.connected) return $chain.chainReturnCB({ reason: 'not connected' });
       var query = chainItem[i++] || {};
@@ -28,12 +29,14 @@ const modtask = (chainItem, cb, $chain) => {
       if (verbose.logQuery) console.log(`${params.action}:start`, query);
 
       var fn = {
-        query: 'search',
+        searchGeneric: 'search',
+        searchById: 'search',
         delete: 'delete'
       }
 
       var q = {
-        query: {
+        searchGeneric: query.genericJSON,
+        searchById: {
           index: query.index,
           body: {
             query: {

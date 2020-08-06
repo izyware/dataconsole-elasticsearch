@@ -4,6 +4,8 @@
   "description": "IzyWare Data Console ElasticSearch Feature",
   "main": "index.js",
   "scripts": {
+    "status": "node node_modules/izy-proxy/cli.js call status?all",
+    "searchGeneric": "node node_modules/izy-proxy/cli.js call search?generic",
     "searchById": "node node_modules/izy-proxy/cli.js call search?byId",
     "deleteById": "node node_modules/izy-proxy/cli.js call delete?byId"
   },
