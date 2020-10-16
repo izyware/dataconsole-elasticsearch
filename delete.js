@@ -14,7 +14,7 @@ modtask.byId = (queryObject, cb) => {
     ids = [ids];
   }
   modtask.doChain([
-    ['chain.importProcessor', 'chain', {
+    ['chain.importProcessor', modtask.ldmod('kernel/path').rel('chain'), {
       verbose: modtask.verbose
     }],
     ['//inline/rel:json?loadById', { id: esConfigId }],
@@ -24,7 +24,7 @@ modtask.byId = (queryObject, cb) => {
       chain([
         ['log', 'processing'],
         chain => {
-          if (i >= ids.length) return chain(['outcome', { success: true }]);
+          if (i >= ids.length) return chain(['outcome', { success: true, data: JSON.stringify(ids, null, 2) }]);
           let idToDelete =  ids[i++];
           chain([
             ['log', 'item (' + i + ') ' + idToDelete],
@@ -37,9 +37,6 @@ modtask.byId = (queryObject, cb) => {
         },
         ['replay']
       ])
-    },
-    chain => {
-      console.log(chain.get('outcome').data);
     }
   ]);
 };
