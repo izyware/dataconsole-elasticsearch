@@ -2,7 +2,7 @@
 
 For command line access use:
 
-    npm run status queryObject.esConfigId xxxx-xxxx
+    npm run status queryObject.esConfigId xxxx-xxxx queryObject.options _nodes/stats/breaker
     npm run searchGeneric queryObject.esConfigId xxxx-xxxx queryObject.JSONStrId xxxx
     npm run searchById queryObject.esConfigId xxxx-xxxx queryObject.index indexname queryObject.type indextype queryObject.ids 1-2-3
     npm run deleteById queryObject.esConfigId xxxx-xxxx queryObject.index indexname queryObject.type indextype queryObject.ignoreNotFound true queryObject.ids 1-2-3
@@ -13,6 +13,8 @@ For command line access use:
 
 # Changelog
 ## V1
+* add support for http[s] esConfig.hosts entries
+* format output for automatin interface
 * fix deep dependency bug. Improve output
 * add status
 * add searchGeneric
