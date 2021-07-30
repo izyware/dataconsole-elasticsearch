@@ -17,7 +17,7 @@ modtask.byId = (queryObject, cb) => {
     ['chain.importProcessor', modtask.ldmod('kernel/path').rel('chain'), {
       verbose: modtask.verbose
     }],
-    ['//inline/rel:json?loadById', { id: esConfigId }],
+    [`//inline/${proxyLib}/json?loadById`, { id: esConfigId }],
     chain => chain(['es.connect', chain.get('outcome').data]),
     chain => {
       var i = 0 ;

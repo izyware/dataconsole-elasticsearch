@@ -10,7 +10,7 @@ modtask.all = (queryObject, cb) => {
     const { esConfigId } = queryObject;
     let cmd = queryObject.options || ''; // `_nodes/stats/breaker?pretty`;
     modtask.doChain([
-        ['//inline/rel:json?loadById', { id: esConfigId }],
+        [`//inline/${proxyLib}/json?loadById`, { id: esConfigId }],
         chain => {
             const esConfig = chain.get('outcome').data;
             let serviceEndPoint = esConfig.hosts[0];

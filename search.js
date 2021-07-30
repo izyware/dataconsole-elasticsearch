@@ -1,5 +1,7 @@
 
 const modtask = () => {};
+const proxyLib = require('izy-proxy').basePath;
+
 modtask.verbose = {
   logConnectionAttemp: false,
   logQuery: false
@@ -12,10 +14,10 @@ modtask.generic = (queryObject, cb) => {
     ['chain.importProcessor', 'chain', {
       verbose: modtask.verbose
     }],
-    ['//inline/rel:json?loadById', { id: JSONStrId }],
+    [`//inline/${proxyLib}/json?loadById`, { id: JSONStrId }],
     chain => {
       genericJSON = chain.get('outcome').data;
-      chain(['//inline/rel:json?loadById', { id: esConfigId }]);
+      chain([`//inline/${proxyLib}/json?loadById`, { id: esConfigId }]);
     },
     chain => {
       const esConfig = chain.get('outcome').data;
@@ -44,7 +46,7 @@ modtask.byId = (queryObject, cb) => {
     ['chain.importProcessor', 'chain', {
       verbose: modtask.verbose
     }],
-    ['//inline/rel:json?loadById', { id: esConfigId }],
+    [`//inline/${proxyLib}/json?loadById`, { id: esConfigId }],
     chain => chain(['es.connect', chain.get('outcome').data]),
     ['es.searchById', {
       index, type, ids

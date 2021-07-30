@@ -4,10 +4,10 @@
   "description": "IzyWare Data Console ElasticSearch Feature",
   "main": "index.js",
   "scripts": {
-    "status": "node node_modules/izy-proxy/cli.js call status?all",
-    "searchGeneric": "node node_modules/izy-proxy/cli.js call search?generic",
-    "searchById": "node node_modules/izy-proxy/cli.js call search?byId",
-    "deleteById": "node node_modules/izy-proxy/cli.js call delete?byId"
+    "status": "node node_modules/izy-proxy/cli.js callpretty status?all",
+    "searchGeneric": "node node_modules/izy-proxy/cli.js callpretty search?generic",
+    "searchById": "node node_modules/izy-proxy/cli.js callpretty search?byId",
+    "deleteById": "node node_modules/izy-proxy/cli.js callpretty delete?byId"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "elasticsearch": "14.2.2",
-    "izy-proxy": "5.0.6"
+    "izy-proxy": "latest"
   },
   "keywords": [
     "izyware",
