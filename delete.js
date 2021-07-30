@@ -1,5 +1,7 @@
 
 const modtask = () => {};
+const proxyLib = require('izy-proxy').basePath;
+
 modtask.verbose = {
   logConnectionAttemp: false,
   logQuery: false

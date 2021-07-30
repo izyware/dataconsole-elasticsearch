@@ -1,4 +1,6 @@
 const modtask = () => {};
+const proxyLib = require('izy-proxy').basePath;
+
 modtask.all = (queryObject, cb) => {
     const commands = [
         '****** You may also try *********',
