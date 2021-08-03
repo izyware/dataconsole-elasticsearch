@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "status": "node node_modules/izy-proxy/cli.js callpretty status?all",
+    "cluster.allocateshard": "node node_modules/izy-proxy/cli.js callpretty cluster?allocateshard",
+    "cluster.status": "node node_modules/izy-proxy/cli.js callpretty cluster?status",
     "searchGeneric": "node node_modules/izy-proxy/cli.js callpretty search?generic",
     "searchById": "node node_modules/izy-proxy/cli.js callpretty search?byId",
     "deleteById": "node node_modules/izy-proxy/cli.js callpretty delete?byId"

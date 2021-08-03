@@ -2,19 +2,29 @@
 const modtask = (chainItem, cb, $chain) => {
   if (!modtask.__chainProcessorConfig) modtask.__chainProcessorConfig = {};
   const verbose =  modtask.__chainProcessorConfig.verbose || {};
-  const adapterservice =  modtask.__chainProcessorConfig.adapterservice || null;
-  const adapterconfig =  modtask.__chainProcessorConfig.adapterconfig || null;
+  const esConfig = modtask.__chainProcessorConfig.esConfig || {}
+  const adapterservice =  esConfig.adapterservice || null;
+  const adapterconfig =  esConfig.adapterconfig || null;
   var i = 0;
   var params = {};
   params.action = modtask.extractPrefix(chainItem[i++]);
   switch (params.action) {
     case 'http':
-      if (!adapterservice) return $chain.chainReturnCB({ reason: 'please define adapterservice' });
-      if (verbose.adapter || true) console.log('Using adapter ', adapterservice, adapterconfig);
+      if (verbose.adapter) console.log('Using adapter ', adapterservice, adapterconfig);
+      var httparams = chainItem[i++];
       $chain.newChainForProcessor(modtask, cb, {}, [
-        [adapterservice + '?httprequest', { httparams: chainItem[i++], config: adapterconfig }],
+        adapterservice ? [adapterservice + '?httprequest', { httparams, config: adapterconfig }] : ['net.httprequest', httparams],
         function(chain) {
-          $chain.set('outcome', chain.get('outcome').data);
+          var result = chain.get('outcome');
+          if (adapterservice) result = result.data;
+          var data = result.responseText;
+          var outcome = {};
+          if (result.status != 200) {
+            outcome =  { reason: result.status + '(non 200): ' + data };
+          } else {
+            outcome = { success: true, data: data };
+          }
+          $chain.set('outcome', outcome);
           cb();
         }
       ]);
