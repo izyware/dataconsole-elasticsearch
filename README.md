@@ -41,5 +41,7 @@ If you find UNASSIGNED shards (reason may be NODE_LEFT, ALLOCATION_FAILED, etc.)
 * add searchGeneric
 * add ignoreNotFound to deleteById
 * support bulk for deleteById
+
+
 [npmjs]: https://www.npmjs.com/package/izyware-dataconsole-elasticsearch
 [github]: https://github.com/izyware/dataconsole-elasticsearch
