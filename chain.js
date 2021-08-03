@@ -2,10 +2,23 @@
 const modtask = (chainItem, cb, $chain) => {
   if (!modtask.__chainProcessorConfig) modtask.__chainProcessorConfig = {};
   const verbose =  modtask.__chainProcessorConfig.verbose || {};
+  const adapterservice =  modtask.__chainProcessorConfig.adapterservice || null;
+  const adapterconfig =  modtask.__chainProcessorConfig.adapterconfig || null;
   var i = 0;
   var params = {};
   params.action = modtask.extractPrefix(chainItem[i++]);
   switch (params.action) {
+    case 'http':
+      if (!adapterservice) return $chain.chainReturnCB({ reason: 'please define adapterservice' });
+      if (verbose.adapter || true) console.log('Using adapter ', adapterservice, adapterconfig);
+      $chain.newChainForProcessor(modtask, cb, {}, [
+        [adapterservice + '?httprequest', { httparams: chainItem[i++], config: adapterconfig }],
+        function(chain) {
+          $chain.set('outcome', chain.get('outcome').data);
+          cb();
+        }
+      ]);
+      return true;
     case 'disconnect':
       if (!modtask.connected) return $chain.chainReturnCB({ reason: 'not connected' });
       cb();
