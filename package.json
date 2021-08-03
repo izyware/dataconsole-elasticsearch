@@ -1,6 +1,6 @@
 {
   "name": "izyware-dataconsole-elasticsearch",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "IzyWare Data Console ElasticSearch Feature",
   "main": "index.js",
   "scripts": {
