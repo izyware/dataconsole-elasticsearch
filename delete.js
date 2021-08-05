@@ -8,7 +8,7 @@ modtask.verbose = {
 };
 
 modtask.byId = (queryObject, cb) => {
-  const { index, type, esConfigId, ignoreNotFound } = queryObject;
+  const { index, type, esConfigId } = queryObject;
   let { ids } = queryObject;
   if (ids.indexOf('-') >= 0) {
     ids = ids.split('-');
@@ -16,29 +16,31 @@ modtask.byId = (queryObject, cb) => {
     ids = [ids];
   }
   modtask.doChain([
-    ['chain.importProcessor', modtask.ldmod('kernel/path').rel('chain'), {
-      verbose: modtask.verbose
-    }],
     [`//inline/${proxyLib}/json?loadById`, { id: esConfigId }],
-    chain => chain(['es.connect', chain.get('outcome').data]),
     chain => {
-      var i = 0 ;
-      chain([
-        ['log', 'processing'],
-        chain => {
-          if (i >= ids.length) return chain(['outcome', { success: true, data: JSON.stringify(ids, null, 2) }]);
-          let idToDelete =  ids[i++];
-          chain([
-            ['log', 'item (' + i + ') ' + idToDelete],
-            ['es.delete', {
-              ignoreNotFound: ignoreNotFound == 'true',
-              index, type,
-              id: idToDelete
-            }]
-          ]);
+        esConfig = chain.get('outcome').data;
+        chain(['chain.importProcessor', 'chain', {
+            verbose: modtask.verbose,
+            esConfig
+        }]);
+    },
+    chain => {
+      let url = `http://${esConfig.hosts[0]}/${index}/_delete_by_query`;
+      chain(['es.http', {
+        url,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        ['replay']
-      ])
+        body: JSON.stringify({
+          query: {
+            ids: {
+              type,
+              values: ids
+            }
+          }
+        })
+      }]);
     }
   ]);
 };

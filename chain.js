@@ -24,70 +24,11 @@ const modtask = (chainItem, cb, $chain) => {
           } else {
             outcome = { success: true, data: data };
           }
+          if (!outcome.success) return $chain.chainReturnCB(outcome);
           $chain.set('outcome', outcome);
           cb();
         }
       ]);
-      return true;
-    case 'disconnect':
-      if (!modtask.connected) return $chain.chainReturnCB({ reason: 'not connected' });
-      cb();
-      return true;
-    case 'connect':
-      if (modtask.connected) return $chain.chainReturnCB({ reason: 'already connected' });
-			const elasticsearch = require('elasticsearch');
-			const config = chainItem[i++] || {};
-			if (verbose.logConnectionAttemp) console.log('Connecting to ', config);
-      modtask.connection = new elasticsearch.Client(config);
-      modtask.connected = true;
-      $chain.set('outcome', { success: true });
-      cb();
-      return true;
-    case 'searchById':
-    case 'searchGeneric':
-    case 'delete':
-      if (!modtask.connected) return $chain.chainReturnCB({ reason: 'not connected' });
-      var query = chainItem[i++] || {};
-      var start = (new Date()).getTime();
-      if (verbose.logQuery) console.log(`${params.action}:start`, query);
-
-      var fn = {
-        searchGeneric: 'search',
-        searchById: 'search',
-        delete: 'delete'
-      }
-
-      var q = {
-        searchGeneric: query.genericJSON,
-        searchById: {
-          index: query.index,
-          body: {
-            query: {
-              ids: {
-                type : query.type,
-                values : query.ids
-              }
-            }
-          },
-        },
-        delete: {
-          index: query.index,
-          type: query.type,
-          id: query.id
-        }
-      };
-      modtask.connection[fn[params.action]](q[params.action], (err, data) => {
-        if (verbose.logQuery) console.log(`${params.action}:finish`, (new Date()).getTime() - start);
-        if (err) {
-          if (err.status == 404 && query.ignoreNotFound) {
-            if (verbose.logQuery) console.log(`${params.action}:ignoreNotFound`);
-          } else {
-            return $chain.chainReturnCB({reason: err.message});
-          }
-        }
-        $chain.set('outcome', { success: true, data });
-        cb();
-      });
       return true;
   }
   return false;

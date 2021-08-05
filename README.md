@@ -7,7 +7,7 @@ This package simplifies access to automating tasks related to elastic search.
 For command line access use:
 
     npm run status queryObject.esConfigId xxxx-xxxx queryObject.options _nodes/stats/breaker
-    npm run searchGeneric queryObject.esConfigId xxxx-xxxx queryObject.JSONStrId xxxx
+    npm run searchGeneric queryObject.esConfigId xxxx-xxxx queryObject.JSONStrId ./test.json
     npm run searchById queryObject.esConfigId xxxx-xxxx queryObject.index indexname queryObject.type indextype queryObject.ids 1-2-3
     npm run deleteById queryObject.esConfigId xxxx-xxxx queryObject.index indexname queryObject.type indextype queryObject.ignoreNotFound true queryObject.ids 1-2-3
     
@@ -31,6 +31,7 @@ If you find UNASSIGNED shards (reason may be NODE_LEFT, ALLOCATION_FAILED, etc.)
 
 # Changelog
 ## V1
+* update search interface and leverage new platform features
 * implement cluster management commands
 * add support for http adapter plug-in
 * utilize the latest izy-proxy feature updgrades

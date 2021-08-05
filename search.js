@@ -11,27 +11,29 @@ modtask.generic = (queryObject, cb) => {
   const { esConfigId, JSONStrId } = queryObject;
   let genericJSON = {};
   modtask.doChain([
-    ['chain.importProcessor', 'chain', {
-      verbose: modtask.verbose
-    }],
+    [`//inline/${proxyLib}/json?loadById`, { id: esConfigId }],
+    chain => {
+      esConfig = chain.get('outcome').data;
+      chain(['chain.importProcessor', 'chain', {
+          verbose: modtask.verbose,
+          esConfig
+      }]);
+    },
     [`//inline/${proxyLib}/json?loadById`, { id: JSONStrId }],
     chain => {
       genericJSON = chain.get('outcome').data;
-      chain([`//inline/${proxyLib}/json?loadById`, { id: esConfigId }]);
+      let url = `http://${esConfig.hosts[0]}/_search`;
+      chain(['es.http', {
+        url,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(genericJSON)
+      }]);
     },
-    chain => {
-      const esConfig = chain.get('outcome').data;
-      const url = `http://${esConfig.hosts[0]}/_search?pretty`;
-      modtask.ldmod('features/v2/http').universalHTTP().sendRequest({
-          url,
-          method: 'POST',
-          body: JSON.stringify(genericJSON)
-      }, function(outcome) {
-          const data = outcome.responseText;
-          console.log(data);
-      });
-  }
-  ]);  
+    chain => chain(['outcome', { success: true, data: JSON.parse(chain.get('outcome').data).hits.hits }])
+  ]);
 }
 
 modtask.byId = (queryObject, cb) => {
@@ -42,17 +44,34 @@ modtask.byId = (queryObject, cb) => {
   } else {
     ids = [ids];
   }
+
   modtask.doChain([
-    ['chain.importProcessor', 'chain', {
-      verbose: modtask.verbose
-    }],
     [`//inline/${proxyLib}/json?loadById`, { id: esConfigId }],
-    chain => chain(['es.connect', chain.get('outcome').data]),
-    ['es.searchById', {
-      index, type, ids
-    }],
     chain => {
-      console.log(chain.get('outcome').data.hits.hits);
-    }
+        esConfig = chain.get('outcome').data;
+        chain(['chain.importProcessor', 'chain', {
+            verbose: modtask.verbose,
+            esConfig
+        }]);
+    },
+    chain => {
+      let url = `http://${esConfig.hosts[0]}/${index}/_search`;
+      chain(['es.http', {
+        url,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          query: {
+            ids: {
+              type,
+              values: ids
+            }
+          }
+        })
+      }]);
+    },
+    chain => chain(['outcome', { success: true, data: JSON.parse(chain.get('outcome').data).hits.hits }])
   ]);
 };
