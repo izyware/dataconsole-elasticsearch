@@ -8,8 +8,12 @@ modtask.verbose = {
 };
 
 modtask.generic = (queryObject, cb) => {
-  const { esConfigId, JSONStrId } = queryObject;
+  let { esConfigId, JSONStrId, index } = queryObject;
   let genericJSON = {};
+  if (!index)
+    index = '';
+  else
+    index += '/';
   modtask.doChain([
     [`//inline/${proxyLib}/json?loadById`, { id: esConfigId }],
     chain => {
@@ -22,7 +26,7 @@ modtask.generic = (queryObject, cb) => {
     [`//inline/${proxyLib}/json?loadById`, { id: JSONStrId }],
     chain => {
       genericJSON = chain.get('outcome').data;
-      let url = `http://${esConfig.hosts[0]}/_search`;
+      let url = `http://${esConfig.hosts[0]}/${index}_search`;
       chain(['es.http', {
         url,
         method: 'POST',

@@ -1,7 +1,7 @@
 {
-  "query": {
-    "match": {
-      "_all": "search"
-    }
-  }
+  "from" : 0, "size" : 1, "terminate_after": 1,
+  "query": {},
+  "sort" : [
+    { "created" : {"order" : "desc" }}
+  ]
 }
